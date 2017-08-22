@@ -1,0 +1,57 @@
+<?php
+use \Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Entity\EntityInterface;
+use Drupal\user\Entity\User;
+use Drupal\std_hacks\Controller\APIController;
+use Drupal\Core\Url;
+use Drupal\Core\Form\ConfigFormBase;
+use Drupal\Core\Link;
+use Drupal\Core\Site\Settings;
+use Drupal\Core\StreamWrapper\PublicStream;
+use Symfony\Component\HttpFoundation\Request;
+
+
+
+/**
+ * Implements hook_form_alter().
+ *  This modile is used to cutomize Basic Setting site page
+ */
+function information_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id){
+
+    // Check form id. If form id is matched with basic setting site page then it is work
+    if ($form_id == 'system_site_information_settings') {
+
+      // Get saved siteapikey
+      $api_key = \Drupal::state()->get('siteapikey');
+
+      // Create a form for save apikey
+      $form['key'] = array(
+                          '#type' => 'fieldset',
+                          '#title' => t('API Key'),
+                          );
+      $form['key']['siteapikey'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Site API Key'),
+        '#default_value' => ($api_key!='') ? $api_key : 'No API Key yet',
+      );
+
+
+      // If api key is not null so submit value is chaged into Update configuration
+      if(empty($api_key)){
+        // On click submit button call information_handler function
+        $form['#submit'][] = 'information_handler';
+      }else{
+        $form['actions']['submit']['#value'] = t('Update configuration');
+        // On click submit button call information_handler function
+        $form['#submit'][] = 'information_handler';
+      }
+
+    }
+}
+
+function information_handler($form, &$form_state) {
+  // Get all Supmitted value
+  $values = $form_state->getValues();
+  // Set siteapikey
+  \Drupal::state()->set('siteapikey', $values['siteapikey']);
+}

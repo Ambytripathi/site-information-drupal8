@@ -1,0 +1,4 @@
+information.description:
+  title: Site Information
+  description: Get site api value in json format using node value.
+  route_name: information.api

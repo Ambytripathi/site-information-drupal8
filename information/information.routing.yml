@@ -1,0 +1,8 @@
+information.api:
+  path: '/FOOBAR12345/{id}'
+  defaults:
+    _controller:  '\Drupal\information\Controller\APIKey::getValue'
+    _title: 'Location Master'
+  requirements:
+    _permission: 'access printer-friendly version'
+    _method:  GET|POST
